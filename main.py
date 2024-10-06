@@ -1,6 +1,8 @@
-#
-# header comment!
-#
+# Program 1: CTA Database App
+#  * Course: CS 341, Fall 2024
+#  * System: MacOS using VSCode
+#  * Student Author: Albert Huynh
+
 import sqlite3
 import objecttier
 
