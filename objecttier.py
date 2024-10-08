@@ -21,7 +21,27 @@ import datatier
 #   Phone: string
 #
 class Lobbyist:
-   pass
+   def __init__(self, lobbyID, firstName, lastName, phone):
+      self.Lobbyist_ID = lobbyID
+      self.First_Name = firstName
+      self.Last_Name = lastName
+      self.Phone = phone
+   
+   @property
+   def Lobbyist_ID(self):
+      return self._Lobbyist_ID
+   
+   @property
+   def First_Name(self):
+      return self._First_Name
+   
+   @property
+   def Last_Name(self):
+      return self._Last_Name
+   
+   @property
+   def Phone(self):
+      return self._Phone
 
 ##################################################################
 #
@@ -49,8 +69,100 @@ class Lobbyist:
 #   Total_Compensation: float
 #
 class LobbyistDetails:
-   pass
+   def __init__(self, lobbyistId, salutation, firstName, mInitial, lastName, suffix, adrs1, adrs2, city, stateInitial, zipCode, country, email, phone, fax, yrsRegistered, employers, totalComp):
+      self.Lobbyist_ID = lobbyistId
+      self.Salutation = salutation
+      self.First_Name = firstName
+      self.Middle_Initial = mInitial
+      self.Last_Name = lastName
+      self.Suffix = suffix
+      self.Address_1 = adrs1
+      self.Address_2 = adrs2
+      self.City = city
+      self.State_Initial = stateInitial
+      self.Zip_Code = zipCode
+      self.Country = country
+      self.Email = email
+      self.Phone = phone
+      self.Fax = fax
+      self.Years_Registered = yrsRegistered
+      self.Employers = employers
+      self.Total_Compensation = totalComp
 
+   # list of properties to get access to these variables because they are private 
+   # (getter functions)
+   @property
+   def Lobbyist_ID(self):
+      return self._Lobbyist_ID
+   
+   @property
+   def Salutation(self):
+      return self._Salutation
+   
+   @property
+   def First_Name(self):
+      return self._First_Name
+
+   @property
+   def Middle_Initial(self):
+      return self._Middle_Initial
+   
+   @property
+   def Last_Name(self):
+      return self._Last_Name
+   
+   @property
+   def Suffix(self):
+      return self._Suffix
+   
+   @property
+   def Address_1(self):
+      return self._Address_1
+   
+   @property
+   def Address_2(self):
+      return self._Address_2
+   
+   @property
+   def City(self):
+      return self._City
+   
+   @property
+   def State_Initial(self):
+      return self._State_Initial
+   
+   @property
+   def Zip_Code(self):
+      return self._Zip_Code
+   
+   @property
+   def Country(self):
+      return self._Country
+   
+   @property
+   def Email(self):
+      return self._Email
+   
+   @property
+   def Phone(self):
+      return self._Phone
+
+   @property
+   def Fax(self):
+      return self._Fax
+
+   @property
+   def Years_Registered(self):
+      return self._Years_Registered
+   
+   @property 
+   def Employers(self):
+      return self._Employers
+   
+   @property
+   def Total_Compensation(self):
+      return self._Total_Compensation
+   
 ##################################################################
 #
 # LobbyistClients:
