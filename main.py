@@ -1,4 +1,4 @@
-# Program 1: Chicago Lobbyist Database
+# Program 2: Chicago Lobbyist Database
 #  * Course: CS 341, Fall 2024
 #  * System: MacOS using VSCode
 #  * Student Author: Albert Huynh
