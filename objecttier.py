@@ -177,7 +177,37 @@ class LobbyistDetails:
 #   Clients: list of clients
 #
 class LobbyistClients:
-   pass
+   def __init__(self, lobbyID, firstName, lastName, phone, totalComp, clients):
+      self.Lobbyist_ID = lobbyID
+      self.First_Name = firstName
+      self.Last_Name = lastName
+      self.Phone = phone
+      self.Total_Compensation = totalComp
+      self.Clients = clients
+   
+   @property
+   def Lobbyist_ID(self):
+      return self._Lobbyist_ID
+   
+   @property
+   def First_Name(self):
+      return self._First_Name
+   
+   @property
+   def Last_Name(self):
+      return self._Last_Name
+   
+   @property
+   def Phone(self):
+      return self._Phone
+
+   @property
+   def Total_Compensation(self):
+      return self._Total_Compensation
+   
+   @property
+   def Clients(self):
+      return self._Clients
 
 ##################################################################
 # 
