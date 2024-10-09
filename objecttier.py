@@ -186,12 +186,12 @@ class LobbyistDetails:
 class LobbyistClients:
    # constructor for the clients of lobbyists
    def __init__(self, lobbyID, firstName, lastName, phone, totalComp, clients):
-      self.Lobbyist_ID = lobbyID
-      self.First_Name = firstName
-      self.Last_Name = lastName
-      self.Phone = phone
-      self.Total_Compensation = totalComp
-      self.Clients = clients
+      self._Lobbyist_ID = lobbyID
+      self._First_Name = firstName
+      self._Last_Name = lastName
+      self._Phone = phone
+      self._Total_Compensation = totalComp
+      self._Clients = clients
    
    # list of properties to get access to these variables because they are private 
    # (getter functions)
@@ -255,6 +255,7 @@ def num_employers(dbConn):
       row = datatier.select_one_row(dbConn, sql)
       return row[0]
    except Exception as err:
+      print(err)
       return -1
 
 ##################################################################
@@ -274,6 +275,7 @@ def num_clients(dbConn):
       row = datatier.select_one_row(dbConn, sql)
       return row[0]
    except Exception as err:
+      print(err)
       return -1
 
 ##################################################################
@@ -391,8 +393,48 @@ def get_lobbyist_details(dbConn, lobbyist_id):
 #          occurs (in which case an error msg is already output).
 #
 def get_top_N_lobbyists(dbConn, N, year):
+   res = []
 
-   pass
+   grabLobbyistDetails = """
+      SELECT LobbyistInfo.Lobbyist_ID, LobbyistInfo.First_Name, 
+      LobbyistInfo.Last_Name, LobbyistInfo.Phone,
+      SUM(Compensation.Compensation_Amount) as totalComp
+      FROM LobbyistInfo
+      JOIN Compensation
+      ON LobbyistInfo.Lobbyist_ID = Compensation.Lobbyist_ID
+      JOIN ClientInfo
+      ON Compensation.Client_ID = ClientInfo.Client_ID
+      WHERE strftime('%Y', date(Period_End)) = ?
+      GROUP BY LobbyistInfo.Lobbyist_ID
+      ORDER BY totalComp DESC
+      LIMIT ?;
+   """
+
+   # using the lobbyist_ID from the other sql query to grab the information here
+   grabClients = """
+      SELECT Client_Name
+      FROM ClientInfo 
+      JOIN Compensation
+      ON ClientInfo.Client_ID = Compensation.Client_ID
+      JOIN LobbyistInfo
+      ON Compensation.Lobbyist_ID = LobbyistInfo.Lobbyist_ID
+      WHERE LobbyistInfo.Lobbyist_ID = ?
+      AND strftime('%Y', date(Period_End)) = ?
+      GROUP BY ClientInfo.Client_ID
+      ORDER BY Client_Name ASC;
+   """
+
+   lobbyistDetailsList = datatier.select_n_rows(dbConn, grabLobbyistDetails, [year, N])
+
+   if len(lobbyistDetailsList) != 0 and lobbyistDetailsList is not None:
+      for row in lobbyistDetailsList:
+         clientList = []
+         clients = datatier.select_n_rows(dbConn, grabClients, [row[0], year])
+         for client in clients:
+            clientList.append(client[0])
+         res.append(LobbyistClients(row[0], row[1], row[2], row[3], row[4], clientList))
+
+   return res
 
 
 ##################################################################
@@ -408,7 +450,30 @@ def get_top_N_lobbyists(dbConn, N, year):
 #          an internal error occurred).
 #
 def add_lobbyist_year(dbConn, lobbyist_id, year):
-   pass
+   checkLobbyist = """
+      SELECT Lobbyist_ID
+      FROM LobbyistYears
+      WHERE Lobbyist_ID = ?
+   """
+
+   sql = """
+      INSERT INTO LobbyistYears (Lobbyist_ID, Year)
+         VALUES (?, ?)
+   """
+
+   try:
+      lobbyistExists = datatier.select_one_row(dbConn, checkLobbyist, [lobbyist_id])
+      
+      if lobbyistExists:
+         rowsChanged = datatier.perform_action(dbConn, sql, [lobbyist_id, year])
+
+         if rowsChanged > 0:
+            return 1
+      else:
+         return 0 
+   except Exception as err:
+      print("add_lobbist_year failed", err)
+      return -1
 
 
 ##################################################################
@@ -427,4 +492,28 @@ def add_lobbyist_year(dbConn, lobbyist_id, year):
 #          an internal error occurred).
 #
 def set_salutation(dbConn, lobbyist_id, salutation):
-   pass
+   checkLobbyist = """
+      SELECT Lobbyist_ID
+      FROM LobbyistYears
+      WHERE Lobbyist_ID = ?
+   """
+
+   sql = """
+      UPDATE LobbyistInfo 
+         SET Salutation = ?
+         WHERE Lobbyist_ID = ?
+   """
+
+   try:
+      lobbyistExists = datatier.select_one_row(dbConn, checkLobbyist, [lobbyist_id])
+      
+      if lobbyistExists:
+         rowsChanged = datatier.perform_action(dbConn, sql, [salutation, lobbyist_id])
+
+         if rowsChanged > 0:
+            return 1
+      else:
+         return 0 
+   except Exception as err:
+      print("set_salutation failed", err)
+      return -1
